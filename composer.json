@@ -1,0 +1,14 @@
+{
+    "name": "robogen/wireform",
+    "autoload": {
+        "psr-4": {
+            "RoboGen\\Wireform\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jyri Isomäki"
+        }
+    ],
+    "require": {}
+}
