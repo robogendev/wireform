@@ -16,7 +16,6 @@ class FormComponent extends Component {
     public function mount() {
         $this->fields = json_decode(json_encode($this->fields()), true);
 
-        
         $this->buildData();
         $this->fields = $this->handleConditionals();
         $this->buildRules();    
