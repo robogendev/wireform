@@ -7,14 +7,19 @@ use Illuminate\Support\Arr;
 
 class FormComponent extends Component {
     public $fields;
-    public $data;
+    public $data = [];
+    public $rules;
 
     public $stepConfirmationModal = false;
     public $stepConfirmationModalData = [];
 
     public function mount() {
         $this->fields = json_decode(json_encode($this->fields()), true);
+
+        
+        $this->buildData();
         $this->fields = $this->handleConditionals();
+        $this->buildRules();    
     }
 
     public function updated() {        
@@ -22,10 +27,42 @@ class FormComponent extends Component {
     }
 
     public function submit() {
+        $this->validate();
+
+        $this->data = Arr::undot(Arr::whereNotNull(Arr::dot($this->data)));
+
         $this->emit('formSubmitted', $this->data);
     }
 
-    public function handleConditionals($fields = null) {
+    public function buildData(?array $fields = null): void {
+        $fields = $fields ?? $this->fields;
+
+        foreach ($fields as $field) {
+            if(!empty($field['fields'])) {
+                $this->buildData($field['fields']);
+            } else if(!empty($field['steps'])) {
+                $this->buildData($field['steps'], true);
+            } else {
+                Arr::set($this->data, $field['key'], null);
+            }
+        }
+    }
+
+    public function buildRules(?array $fields = null): void {
+        $fields = $fields ?? $this->fields;
+
+        foreach ($fields as $field) {
+            if(!empty($field['fields'])) {
+                $this->buildRules($field['fields']);
+            } else if(!empty($field['steps'])) {
+                $this->buildRules($field['steps']);
+            } else if(!empty($field['required']) && !empty($field['visibility'])) {
+                $this->rules["data.{$field['key']}"] = 'required';
+            }
+        }
+    }
+
+    public function handleConditionals(?array $fields = null) : array {
         $fields = $fields ?? $this->fields;
 
         foreach ($fields as &$field) {            
@@ -49,7 +86,7 @@ class FormComponent extends Component {
         if (empty($field['conditionals'])) {
             return $field;
         }
-    
+
         $visibility = $field['visibility'];
         $data = Arr::dot($this->data ?? []);
     
@@ -70,8 +107,8 @@ class FormComponent extends Component {
             }
         }
     
-        if (!$visibility) {
-            $field['value'] = null;
+        if(!$visibility) {
+            Arr::set($this->data, $field['key'], null);
         }
 
         $field['visibility'] = $visibility;
@@ -82,6 +119,8 @@ class FormComponent extends Component {
 
     public function nextStep($key, $skip_confirmation = false) {
         $confirm = $this->findFieldProperty($key, 'confirmation');
+
+        $this->validateStep($key);
 
         if($confirm && !$skip_confirmation) {
             $this->stepConfirmationModal = true;
@@ -99,6 +138,23 @@ class FormComponent extends Component {
         $this->updateField($key, 'activeStep', '-1');
     }
 
+    public function validateStep($key): void {
+        $step = $this->findFieldProperty($key, 'steps')[$this->findFieldProperty($key, 'activeStep')];
+        $rules = [];
+
+        foreach($step['fields'] as $field) {
+            if(!empty($field['required']) && !empty($field['visibility'])) {
+                $rules["data.{$field['key']}"] = 'required';
+            }
+        }
+
+        if(empty($rules)) {
+            return;
+        }
+
+        $this->validate($rules);
+    }
+
     private function buildStepConfirmationModalData($key) {
         $step = $this->findFieldProperty($key, 'steps')[$this->findFieldProperty($key, 'activeStep')];
         $data = [];
@@ -110,7 +166,7 @@ class FormComponent extends Component {
         foreach(Arr::dot($this->data) as $key => $value) {
             $label = $this->findFieldProperty($key, 'label', $step['fields']);
 
-            if(!$label) {
+            if(empty($label) || empty($value)) {
                 continue;
             }
 

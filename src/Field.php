@@ -8,6 +8,7 @@ class Field {
     public $label;
     public $description;
     public $visibility = true;
+    public $required;
     public $conditionals;
 
     public function __construct(string $key, ?string $label = null) {
@@ -49,6 +50,11 @@ class Field {
 
     public function get_visibility() {
         return $this->visibility;
+    }
+
+    public function set_required(bool $required) {
+        $this->required = $required;
+        return $this;
     }
 
     public function add_conditional(Field $field, string $operator, $value) {

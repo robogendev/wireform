@@ -57,13 +57,13 @@
             @endforeach
 
             <div class="mt-6 flex justify-end">
-                <x-secondary-button wire:click="$toggle('stepConfirmationModal')">
+                <x-wireform::button type="button" style="secondary" wire:click="$toggle('stepConfirmationModal')">
                     {{ __('Cancel') }}
-                </x-secondary-button>
+                </x-wireform::button>
     
-                <x-primary-button class="ml-3" wire:click="nextStep('{{ $key }}', true)">
+                <x-wireform::button type="button" class="ml-3" wire:click="nextStep('{{ $key }}', true)">
                     {{ __('Confirm') }}
-                </x-primary-button>
+                </x-wireform::button>
             </div>
         </div>
     </x-wireform::modal>

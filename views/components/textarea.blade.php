@@ -13,5 +13,9 @@
         @endif
 
         <textarea id="{{ $key }}" wire:model="data.{{ $key }}" rows="5" class="block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+
+        @error("data.{$key}")
+            <x-wireform::input-error :messages="$message" />
+        @enderror
     </div>
 @endif

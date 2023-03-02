@@ -18,7 +18,11 @@
                     <input type="radio" id="{{ $key }}-{{ $value }}" value="{{ $value }}" wire:model="data.{{ $key }}" />
                     <label class="font-medium text-sm text-gray-700" for="{{ $key }}-{{ $value }}">{{ $label }}</label>
                 </div>
-        @endforeach
+            @endforeach
         </div>
+
+        @error("data.{$key}")
+            <x-wireform::input-error :messages="$message" />
+        @enderror
     </div>
 @endif

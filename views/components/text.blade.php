@@ -13,5 +13,9 @@
         @endif
 
         <input type="text" id="{{ $key }}" wire:model="data.{{ $key }}" class="block w-full border-gray-300 rounded-md shadow-sm" />
+
+        @error("data.{$key}")
+            <x-wireform::input-error :messages="$message" />
+        @enderror
     </div>
 @endif
