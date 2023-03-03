@@ -13,7 +13,7 @@ class Steps extends Field {
     public $confirmationTitle = 'Confirm';
     public $confirmationDescription;
 
-    public function add_step($step) {
+    public function add_step($step): self {
         if($step->type === 'group') {
             foreach($step->fields as $field) {
                 $field->set_key($this->key . '.' . $field->key);
@@ -25,11 +25,15 @@ class Steps extends Field {
         return $this;
     }
 
-    public function add_steps($steps) {
+    public function add_steps($steps): self {
         foreach ($steps as $step) {
             $this->steps[] = $step;
         }
         return $this;
+    }
+
+    public function get_steps(): array {
+        return $this->steps;
     }
 
     public function set_confirmation($confirmation) {
@@ -37,13 +41,25 @@ class Steps extends Field {
         return $this;
     }
 
-    public function set_confirmation_title($confirmationTitle) {
+    public function get_confirmation(): bool {
+        return $this->confirmation;
+    }
+
+    public function set_confirmation_title($confirmationTitle): self {
         $this->confirmationTitle = $confirmationTitle;
         return $this;
     }
 
-    public function set_confirmation_description($confirmationDescription) {
+    public function get_confirmation_title(): ?string {
+        return $this->confirmationTitle;
+    }
+
+    public function set_confirmation_description($confirmationDescription): self {
         $this->confirmationDescription = $confirmationDescription;
         return $this;
+    }
+
+    public function get_confirmation_description(): ?string {
+        return $this->confirmationDescription;
     }
 }

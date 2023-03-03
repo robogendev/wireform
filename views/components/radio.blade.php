@@ -15,8 +15,22 @@
         <div>
             @foreach($choices as $value => $label)
                 <div class="block">
-                    <input type="radio" id="{{ $key }}-{{ $value }}" value="{{ $value }}" wire:model="data.{{ $key }}" />
-                    <label class="font-medium text-sm text-gray-700" for="{{ $key }}-{{ $value }}">{{ $label }}</label>
+                    <input
+                        class="disabled:bg-gray-100"
+                        id="{{ $key }}-{{ $value }}"
+                        type="radio"
+                        value="{{ $value }}"
+                        {{ $disabled ? 'disabled' : '' }}
+                        wire:model="data.{{ $key }}"
+                    />
+                    <label
+                        @class([
+                            "font-medium text-sm",
+                            "text-gray-700" => !$disabled,
+                            "text-gray-500" => $disabled,
+                        ])
+                        for="{{ $key }}-{{ $value }}"
+                    >{{ $label }}</label>
                 </div>
             @endforeach
         </div>

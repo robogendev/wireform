@@ -12,7 +12,13 @@
             </div>
         @endif
 
-        <input type="text" id="{{ $key }}" wire:model="data.{{ $key }}" class="block w-full border-gray-300 rounded-md shadow-sm" />
+        <input
+            class="block w-full border-gray-300 rounded-md shadow-sm disabled:bg-gray-100"
+            id="{{ $key }}"
+            type="text"
+            {{ $disabled ? 'disabled' : '' }}
+            wire:model="data.{{ $key }}"
+        />
 
         @error("data.{$key}")
             <x-wireform::input-error :messages="$message" />

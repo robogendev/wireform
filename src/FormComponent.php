@@ -42,7 +42,7 @@ class FormComponent extends Component {
             } else if(!empty($field['steps'])) {
                 $this->buildData($field['steps'], true);
             } else {
-                Arr::set($this->data, $field['key'], null);
+                Arr::set($this->data, $field['key'], $field['value']);
             }
         }
     }

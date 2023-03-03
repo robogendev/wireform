@@ -8,7 +8,7 @@ class Button extends Field {
     public $type = 'button';
     public $style = 'primary';
 
-    public function set_style($style) {
+    public function set_style($style): self {
         $this->style = $style;
         return $this;
     }
