@@ -174,6 +174,11 @@ class FormComponent extends Component {
                 $value = $choices[$value];
             }
 
+            if($this->findFieldProperty($key, 'type', $step['fields']) === 'select') {
+                $options = $this->findFieldProperty($key, 'options', $step['fields']);
+                $value = $options[$value];
+            }
+
             $data[] = [
                 'label' => $label,
                 'value' => $value,
