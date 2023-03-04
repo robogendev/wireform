@@ -13,7 +13,7 @@ class Field {
     public $visibility = true;
     public $required;
     public $value;
-    public $conditionals;
+    public $logic;
 
     public function __construct(string $key, ?string $label = null) {
         $this->key = $key;
@@ -83,24 +83,17 @@ class Field {
         return $this->value;
     }
 
-    public function add_conditional(Field $field, string $operator, $value): self {
-        $this->conditionals[] = [
-            'field' => $field,
-            'operator' => $operator,
-            'value' => $value
-        ];
-        return $this;
-    }
-
-    public function add_conditionals(array $conditionals): self {
-        foreach ($conditionals as $conditional) {
-            $this->conditionals[] = $conditional;
+    public function set_logic(array $logic) {
+        if(!empty($logic['relation']) && !in_array($logic['relation'], ['AND', 'OR'])) {
+            throw new \Exception('Invalid relation type');
         }
+
+        $this->logic = $logic;
         return $this;
     }
 
-    public function get_conditionals(): ?array {
-        return $this->conditionals;
+    public function get_logic(): ?array {
+        return $this->logic;
     }
 
     public function render(): View {

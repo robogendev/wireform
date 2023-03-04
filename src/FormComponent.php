@@ -82,28 +82,42 @@ class FormComponent extends Component {
     }
 
     public function handleFieldConditionals($field) {
-        if (empty($field['conditionals'])) {
+        if (empty($field['logic'])) {
             return $field;
         }
+
+        $relation = 'AND';
+        $conditionals = [];
 
         $visibility = $field['visibility'];
         $data = Arr::dot($this->data ?? []);
     
-        foreach ($field['conditionals'] as $conditional) {
-            $key = $conditional['field']['key'];
-            $value = $conditional['value'];
-            $operator = $conditional['operator'];
-    
+        foreach ($field['logic'] as $conditional) {
+            if(!is_array($conditional)) {
+                $relation = $conditional;
+                continue;
+            }
+
+            $key = $conditional[0]['key'];
+            $operator = $conditional[1];
+            $value = $conditional[2];
+
             if (array_key_exists($key, $data)) {
                 $match = ($data[$key] === $value);
                 if (($match && $operator === '==') || (!$match && $operator === '!=')) {
-                    $visibility = true;
+                    $conditionals[] = true;
                 } else {
-                    $visibility = false;
+                    $conditionals[] = false;
                 }
             } else {
-                $visibility = ($operator === '!=');
+                $conditionals[] = ($operator === '!=');
             }
+        }
+
+        if ($relation === 'OR') {
+            $visibility = in_array(true, $conditionals);
+        } else {
+            $visibility = !in_array(false, $conditionals);
         }
     
         if(!$visibility) {
