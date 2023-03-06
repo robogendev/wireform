@@ -177,9 +177,10 @@ class FormComponent extends Component {
         }
 
         foreach(Arr::dot($this->data) as $key => $value) {
+            $type = $this->findFieldProperty($key, 'type', $step['fields']);
             $label = $this->findFieldProperty($key, 'label', $step['fields']);
 
-            if(empty($value)) {
+            if(empty($label) || empty($value) || $type === 'hidden') {
                 continue;
             }
 
