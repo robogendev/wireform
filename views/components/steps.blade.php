@@ -35,15 +35,17 @@
 
     <x-wireform::modal name="confirmationState" wire:model="stepConfirmationModal" focusable>
         <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ $confirmationTitle }}
-            </h2>
+            <div class="mb-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    {{ $confirmationTitle }}
+                </h2>
 
-            @if($confirmationDescription)
-                <p class="mt-2 text-sm text-gray-500">
-                    {{ $confirmationDescription }}
-                </p>
-            @endif
+                @if($confirmationDescription)
+                    <p class="mt-1 text-sm text-gray-500">
+                        {{ $confirmationDescription }}
+                    </p>
+                @endif
+            </div>
 
             @foreach($this->stepConfirmationModalData as $d)
                 <div class="mt-4">
