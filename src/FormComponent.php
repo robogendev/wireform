@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 class FormComponent extends Component {
     public $fields;
     public $data = [];
+    public $cleanData = [];
     public $rules;
 
     public $stepConfirmationModal = false;
@@ -29,8 +30,9 @@ class FormComponent extends Component {
         $this->validate();
 
         $this->data = Arr::undot(Arr::whereNotNull(Arr::dot($this->data)));
+        $this->cleanData = $this->buildCleanData();
 
-        $this->emit('formSubmitted', $this->data);
+        $this->emit('formSubmitted', $this->data, $this->cleanData);
     }
 
     public function buildData(?array $fields = null): void {
@@ -45,6 +47,40 @@ class FormComponent extends Component {
                 Arr::set($this->data, $field['key'], $field['value']);
             }
         }
+    }
+
+    public function buildCleanData(): array {
+        $data = [];
+
+        if(empty($this->data)) {
+            return $data;
+        }
+
+        foreach(Arr::dot($this->data) as $key => $value) {
+            $type = $this->findFieldProperty($key, 'type');
+            $label = $this->findFieldProperty($key, 'label');
+
+            if(empty($label) || empty($value) || $type === 'hidden') {
+                continue;
+            }
+
+            if($this->findFieldProperty($key, 'type') === 'radio') {
+                $choices = $this->findFieldProperty($key, 'choices');
+                $value = $choices[$value];
+            }
+
+            if($this->findFieldProperty($key, 'type') === 'select') {
+                $options = $this->findFieldProperty($key, 'options');
+                $value = $options[$value];
+            }
+
+            $data[] = [
+                'label' => $label,
+                'value' => $value,
+            ];
+        }
+
+        return $data;
     }
 
     public function buildRules(?array $fields = null): void {
