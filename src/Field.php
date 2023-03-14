@@ -14,6 +14,7 @@ class Field {
     public $required;
     public $value;
     public $logic;
+    public $include = true;
 
     public function __construct(string $key, ?string $label = null) {
         $this->key = $key;
@@ -94,6 +95,15 @@ class Field {
 
     public function get_logic(): ?array {
         return $this->logic;
+    }
+
+    public function set_include(bool $include): self {
+        $this->include = $include;
+        return $this;
+    }
+
+    public function get_include(): bool {
+        return $this->include;
     }
 
     public function render(): View {
