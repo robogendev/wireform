@@ -41,7 +41,7 @@
                 </h2>
 
                 @if($confirmationDescription)
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-gray-500">
                         {{ $confirmationDescription }}
                     </p>
                 @endif
@@ -49,10 +49,10 @@
 
             @foreach($this->stepConfirmationModalData as $d)
                 <div class="mt-4">
-                    <div class="text-sm font-medium text-gray-500">
+                    <div class="font-medium text-gray-500">
                         {{ $d['label'] }}
                     </div>
-                    <div class="mt-1 text-sm text-gray-900">
+                    <div class="mt-1 text-gray-900">
                         {{ $d['value'] }}
                     </div>
                 </div>

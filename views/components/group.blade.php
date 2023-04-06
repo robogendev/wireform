@@ -6,7 +6,7 @@
             @endif
 
             @if($description)
-                <p class="mt-1 text-sm text-gray-600">{{ $description }}</p>
+                <p class="mt-1 text-gray-600">{{ $description }}</p>
             @endif
         </div>
     @endif
