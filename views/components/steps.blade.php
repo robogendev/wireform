@@ -19,14 +19,14 @@
                         'mr-auto',
                         'hidden' => $index == 0
                     ])>
-                        {{ __('Previous') }}
+                        {{ __('wireform::step.previous') }}
                     </x-wireform::button>
 
                     <x-wireform::button type="button" wire:click="nextStep('{{ $key }}')" @class([
                         'ml-auto',
                         'hidden' => $index == count($steps) - 1
                     ])>
-                        {{ __('Next') }}
+                        {{ __('wireform::step.next') }}
                     </x-wireform::button>
                 </div>
             @endif
@@ -60,11 +60,11 @@
 
             <div class="mt-6 flex justify-end">
                 <x-wireform::button type="button" style="secondary" wire:click="$toggle('stepConfirmationModal')">
-                    {{ __('Cancel') }}
+                    {{ __('wireform::step.cancel') }}
                 </x-wireform::button>
     
                 <x-wireform::button type="button" class="ml-3" wire:click="nextStep('{{ $key }}', true)">
-                    {{ __('Confirm') }}
+                    {{ __('wireform::step.confirm') }}
                 </x-wireform::button>
             </div>
         </div>

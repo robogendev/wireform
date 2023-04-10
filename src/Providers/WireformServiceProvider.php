@@ -8,5 +8,6 @@ class WireformServiceProvider extends ServiceProvider {
 
     public function boot() {
         $this->loadViewsFrom(__DIR__ . '/../../views', 'wireform');
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'wireform');
     }
 }
