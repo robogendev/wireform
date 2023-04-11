@@ -4,6 +4,7 @@ namespace RoboGen\Wireform;
 
 use Livewire\Component;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class FormComponent extends Component {
     public $fields;
@@ -44,7 +45,11 @@ class FormComponent extends Component {
             } else if(!empty($field['steps'])) {
                 $this->buildData($field['steps'], true);
             } else {
-                Arr::set($this->data, $field['key'], $field['value']);
+                if($field['type'] === 'checkbox') {
+                    Arr::set($this->data, $field['key'], []);
+                } else {
+                    Arr::set($this->data, $field['key'], $field['value']);
+                }
             }
         }
     }
@@ -57,6 +62,12 @@ class FormComponent extends Component {
         }
 
         foreach(Arr::dot($this->data) as $key => $value) {
+
+            // If key includes [] then it's an array
+            if(Str::contains($key, '[]')) {
+                $key = Str::before($key, '[]') . '[]';
+            }
+
             $type = $this->findFieldProperty($key, 'type');
             $label = $this->findFieldProperty($key, 'label');
             $include = $this->findFieldProperty($key, 'include');
@@ -75,7 +86,17 @@ class FormComponent extends Component {
                 $value = $options[$value];
             }
 
-            $data[] = [
+            if($this->findFieldProperty($key, 'type') === 'checkbox') {
+                $choices = $this->findFieldProperty($key, 'choices');
+                $value = $choices[$value];
+            }
+
+            if(array_key_exists($key, $data)) {
+                $data[$key]['value'] .= ', ' . $value;
+                continue;
+            }
+
+            $data[$key] = [
                 'label' => $label,
                 'value' => $value,
             ];
@@ -214,6 +235,12 @@ class FormComponent extends Component {
         }
 
         foreach(Arr::dot($this->data) as $key => $value) {
+
+            // If key includes [] then it's an array
+            if(Str::contains($key, '[]')) {
+                $key = Str::before($key, '[]') . '[]';
+            }
+
             $type = $this->findFieldProperty($key, 'type', $step['fields']);
             $label = $this->findFieldProperty($key, 'label', $step['fields']);
 
@@ -231,7 +258,17 @@ class FormComponent extends Component {
                 $value = $options[$value];
             }
 
-            $data[] = [
+            if($this->findFieldProperty($key, 'type', $step['fields']) === 'checkbox') {
+                $choices = $this->findFieldProperty($key, 'choices', $step['fields']);
+                $value = $choices[$value];
+            }
+
+            if(array_key_exists($key, $data)) {
+                $data[$key]['value'] .= ', ' . $value;
+                continue;
+            }
+
+            $data[$key] = [
                 'label' => $label,
                 'value' => $value,
             ];
