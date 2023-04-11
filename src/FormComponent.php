@@ -179,7 +179,11 @@ class FormComponent extends Component {
         }
     
         if(!$visibility) {
-            Arr::set($this->data, $field['key'], null);
+            if($field['type'] === 'checkbox') {
+                Arr::set($this->data, $field['key'], []);
+            } else {
+                Arr::set($this->data, $field['key'], null);
+            }
         }
 
         $field['visibility'] = $visibility;
